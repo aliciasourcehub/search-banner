@@ -19,12 +19,8 @@ export default class DiscourseCategoryBanners extends Component {
   }
 
   get shouldRender() {
-    return (
-      this.categorySlugPathWithID ||
-      (this.keepDuringLoadingRoute &&
-        this.router.currentRoute.name.includes("loading"))
-    );
-  }
+    return true;
+  }  
 
   get isVisible() {
     if (this.categorySlugPathWithID) {
@@ -110,49 +106,13 @@ export default class DiscourseCategoryBanners extends Component {
 
   @action
   teardownComponent() {
-    document.body.classList.remove("category-header");
-    this.category = null;
     this.categoryBannerPresence.setTo(false);
   }
 
+
   @action
   getCategory() {
-    if (!this.isVisible) {
-      return;
-    }
-
-    if (this.categorySlugPathWithID) {
-      this.category = Category.findBySlugPathWithID(
-        this.categorySlugPathWithID
-      );
-      this.categoryBannerPresence.setTo(true);
-      this.keepDuringLoadingRoute = true;
-    } else {
-      if (!this.router.currentRoute.name.includes("loading")) {
-        return (this.keepDuringLoadingRoute = false);
-      }
-    }
-
-    const exceptions = this.#parseExceptions(settings.exceptions);
-    const isException = exceptions.includes(this.category?.name.toLowerCase());
-    const isTarget = this.#checkTargetCategory();
-    const hideMobile = this.site.mobileView && !settings.show_mobile;
-    const hideSubCategory =
-      this.category?.parentCategory && !settings.show_subcategory;
-    const hasNoCategoryDescription =
-      settings.hide_if_no_description && !this.category?.description_text;
-
-    if (
-      isTarget &&
-      !isException &&
-      !hasNoCategoryDescription &&
-      !hideSubCategory &&
-      !hideMobile
-    ) {
-      document.body.classList.add("category-header");
-    } else {
-      document.body.classList.remove("category-header");
-      this.categoryBannerPresence.setTo(false);
-    }
+    this.categoryBannerPresence.setTo(true);
   }
+
 }
